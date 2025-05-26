@@ -18,28 +18,34 @@ void MainWindow::setupUI() {
 
     QFormLayout *formLayout = new QFormLayout();
 
-    // Список параметров с значениями по умолчанию
-    QMap<QString, double> defaultParams = {
-        {"mass", 10.0},
-        {"Cd", 0.47},
-        {"air_density", 1.225},
-        {"radius", 0.1},
-        {"g", 9.81},
-        {"wind_x", 5.0},
-        {"wind_z", 0.0},
-        {"angle_deg", 45.0},
-        {"initial_speed", 50.0},
-        {"azimuth_deg", 30.0}
+    // Список параметров с значениями по умолчанию и русскими названиями
+    struct ParamInfo {
+        QString key;
+        QString russianName;
+        double defaultValue;
+    };
+    
+    QList<ParamInfo> paramInfoList = {
+        {"mass", "Масса снаряда (кг)", 10.0},
+        {"Cd", "Коэффициент сопротивления", 0.47},
+        {"air_density", "Плотность воздуха (кг/м³)", 1.225},
+        {"radius", "Радиус снаряда (м)", 0.1},
+        {"g", "Ускорение свободного падения (м/с²)", 9.81},
+        {"wind_x", "Скорость ветра по X (м/с)", 5.0},
+        {"wind_z", "Скорость ветра по Z (м/с)", 0.0},
+        {"angle_deg", "Угол запуска (градусы)", 45.0},
+        {"initial_speed", "Начальная скорость (м/с)", 50.0},
+        {"azimuth_deg", "Азимут (градусы)", 30.0}
     };
 
     // Создаем поля ввода
-    for (auto it = defaultParams.begin(); it != defaultParams.end(); ++it) {
+    for (const auto& paramInfo : paramInfoList) {
         QDoubleSpinBox *spinBox = new QDoubleSpinBox(this);
         spinBox->setRange(-1e6, 1e6);
         spinBox->setDecimals(3);
-        spinBox->setValue(it.value());
-        inputFields[it.key()] = spinBox;
-        formLayout->addRow(it.key(), spinBox);
+        spinBox->setValue(paramInfo.defaultValue);
+        inputFields[paramInfo.key] = spinBox;
+        formLayout->addRow(paramInfo.russianName, spinBox);
     }
 
     // Создаем кнопки

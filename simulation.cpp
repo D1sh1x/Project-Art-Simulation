@@ -297,11 +297,10 @@ void StartSimulation(Parameters params) {
 
     // Добавление осей координат
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
-    axes->SetTotalLength(10, 10, 10);
-    axes->SetShaftType(vtkAxesActor::CYLINDER_SHAFT);
-    axes->SetCylinderRadius(0.1);
-    axes->SetAxisLabels(false);
-
+    axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
+    
+    // Упрощенная настройка осей
+    axes->AxisLabelsOff();  // Отключаем метки осей для простоты
 
     // Создание текстовых меток
     auto CreateTextActor = [](const std::string& text, int y_pos) {
@@ -318,11 +317,22 @@ void StartSimulation(Parameters params) {
         if (s.y > max_height) max_height = s.y;
     }
     double flight_time = (states.size() - 1) * dt;
+    
+    // Вычисляем дальность полета
+    double distance_x = std::abs(states.back().x - states.front().x);
+    double distance_z = std::abs(states.back().z - states.front().z);
+    double total_distance = std::sqrt(distance_x * distance_x + distance_z * distance_z);
 
-    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height), 50);
-    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time), 30);
-    auto textWind = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + 
-                                    " Z: " + std::to_string(params.wind_z), 10);
+    // Поднимаем все тексты выше, чтобы они были видны
+    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height) + " m", 160);
+    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time) + " s", 140);
+    auto textDistanceX = CreateTextActor("Distance X: " + std::to_string(distance_x) + " m", 120);
+    auto textDistanceZ = CreateTextActor("Distance Z: " + std::to_string(distance_z) + " m", 100);
+    auto textTotalDistance = CreateTextActor("Total Distance: " + std::to_string(total_distance) + " m", 80);
+    auto textWindX = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + " m/s", 60);
+    auto textWindZ = CreateTextActor("Wind Z: " + std::to_string(params.wind_z) + " m/s", 40);
+    auto textMass = CreateTextActor("Mass: " + std::to_string(params.mass) + " kg", 20);
+    auto textRadius = CreateTextActor("Radius: " + std::to_string(params.radius) + " m", 0);
 
     // Настройка рендерера
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -334,10 +344,15 @@ void StartSimulation(Parameters params) {
     renderer->AddActor(axes);
     renderer->AddActor2D(textMaxHeight);
     renderer->AddActor2D(textFlightTime);
-    renderer->AddActor2D(textWind);
+    renderer->AddActor2D(textDistanceX);
+    renderer->AddActor2D(textDistanceZ);
+    renderer->AddActor2D(textTotalDistance);
+    renderer->AddActor2D(textWindX);
+    renderer->AddActor2D(textWindZ);
+    renderer->AddActor2D(textMass);
+    renderer->AddActor2D(textRadius);
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
-    renderer->ResetCamera();
-
+    
     // Настройка окна
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
     renderWindow->AddRenderer(renderer);
@@ -420,10 +435,10 @@ void StartAnimatedSimulation(Parameters params) {
 
     // Добавление осей координат
     auto axes = vtkSmartPointer<vtkAxesActor>::New();
-    axes->SetTotalLength(10, 10, 10);
-    axes->SetShaftType(vtkAxesActor::CYLINDER_SHAFT);
-    axes->SetCylinderRadius(0.1);
-    axes->SetAxisLabels(false);
+    axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
+    
+    // Упрощенная настройка осей
+    axes->AxisLabelsOff();  // Отключаем метки осей для простоты
 
     // Создание текстовых меток
     auto CreateTextActor = [](const std::string& text, int y_pos) {
@@ -440,11 +455,23 @@ void StartAnimatedSimulation(Parameters params) {
         if (s.y > max_height) max_height = s.y;
     }
     double flight_time = (states.size() - 1) * dt;
+    
+    // Вычисляем дальность полета
+    double distance_x = std::abs(states.back().x - states.front().x);
+    double distance_z = std::abs(states.back().z - states.front().z);
+    double total_distance = std::sqrt(distance_x * distance_x + distance_z * distance_z);
 
-    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height), 50);
-    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time), 30);
-    auto textWind = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + 
-                                    " Z: " + std::to_string(params.wind_z), 10);
+    // Поднимаем все тексты выше, чтобы они были видны
+    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height) + " m", 160);
+    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time) + " s", 140);
+    auto textDistanceX = CreateTextActor("Distance X: " + std::to_string(distance_x) + " m", 120);
+    auto textDistanceZ = CreateTextActor("Distance Z: " + std::to_string(distance_z) + " m", 100);
+    auto textTotalDistance = CreateTextActor("Total Distance: " + std::to_string(total_distance) + " m", 80);
+    auto textWindX = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + " m/s", 60);
+    auto textWindZ = CreateTextActor("Wind Z: " + std::to_string(params.wind_z) + " m/s", 40);
+    auto textMass = CreateTextActor("Mass: " + std::to_string(params.mass) + " kg", 20);
+    auto textRadius = CreateTextActor("Radius: " + std::to_string(params.radius) + " m", 0);
+
 
     // Настройка рендерера
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -455,10 +482,15 @@ void StartAnimatedSimulation(Parameters params) {
     renderer->AddActor(axes);
     renderer->AddActor2D(textMaxHeight);
     renderer->AddActor2D(textFlightTime);
-    renderer->AddActor2D(textWind);
+    renderer->AddActor2D(textDistanceX);
+    renderer->AddActor2D(textDistanceZ);
+    renderer->AddActor2D(textTotalDistance);
+    renderer->AddActor2D(textWindX);
+    renderer->AddActor2D(textWindZ);
+    renderer->AddActor2D(textMass);
+    renderer->AddActor2D(textRadius);
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
-    renderer->ResetCamera();
-
+    
     // Настройка окна
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
     renderWindow->AddRenderer(renderer);
