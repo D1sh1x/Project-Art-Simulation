@@ -1,234 +1,89 @@
-# Симуляция траектории артиллерийского снаряда
+# Симулятор Артиллерийской Стрельбы
 
-Проект для моделирования и визуализации траектории полета артиллерийского снаряда с учетом сопротивления воздуха и ветра.
+Программа для симуляции полета снаряда с учетом различных физических параметров и визуализацией траектории в 2D и 3D.
 
-## Инструкция по сборке проекта со статическими библиотеками
+## Возможности
 
-Для сборки проекта с минимальным количеством DLL-зависимостей, следуйте этим инструкциям:
+*   **Моделирование полета снаряда:**
+    *   Учет начальной скорости, угла запуска, азимута.
+    *   Влияние массы снаряда, его радиуса и коэффициента сопротивления воздуха.
+    *   Учет плотности воздуха и ускорения свободного падения.
+    *   Возможность задания скорости и направления ветра (по осям X и Z).
+    *   Расчет траектории методом Рунге-Кутты 4-го порядка.
 
-### Предварительные требования
+*   **2D Визуализация и Анализ:**
+    *   **Предпросмотр траектории:** Отображение 2D-траектории полета (проекция на плоскость XY) в реальном времени при изменении параметров.
+    *   **Отображение осей и сетки:** Координатные оси (X, Y) и размерная сетка с метками для удобства анализа.
+    *   **Вывод результатов:** Отображение ключевых показателей траектории (максимальная высота, дальность полета по X и Z, общая дальность, время полета).
+    *   **Сохранение и загрузка параметров:** Возможность сохранять наборы входных параметров в файл и загружать их.
+    *   **Построение графиков зависимостей:**
+        *   Выбор типа зависимости (например, дальность от начальной скорости, высота от угла и т.д.).
+        *   Настройка диапазона и шага варьируемого параметра.
+        *   Отображение графика в области 2D-визуализации.
+        *   Возможность вернуться к предпросмотру траектории после построения графика.
 
-1. CMake 3.10 или выше
-2. Компилятор C++ с поддержкой C++11 (MSVC, GCC, Clang)
-3. Qt 5.12 или выше
-4. VTK 9.0 или выше
+*   **3D Визуализация:**
+    *   **Статическая 3D-визуализация:** Отображение полной траектории полета снаряда в 3D-пространстве.
+    *   **Анимированная 3D-визуализация:** Динамическое отображение полета снаряда по траектории.
+        *   Отображение текущих координат снаряда в реальном времени.
+    *   **Масштабируемые оси и сетка:** `vtkCubeAxesActor` используется для отображения осей X, Y, Z и координатной сетки, масштабируемых в соответствии с размерами траектории.
+    *   **Интерактивная камера:** Возможность вращать, приближать/отдалять и панорамировать сцену.
+    *   **Информационные метки:** Подпись "3D Simulation", кнопка "Back to Menu" для закрытия окна 3D-симуляции.
 
-### Шаги по сборке со статическими библиотеками
+*   **Пользовательский интерфейс:**
+    *   Написан с использованием Qt.
+    *   Интуитивно понятный ввод параметров.
+    *   Кнопка "Инструкция" для вызова справки по использованию программы.
 
-#### 1. Сборка статической версии Qt
+## Сборка и запуск
 
-1. Скачайте исходный код Qt с [официального сайта](https://www.qt.io/download)
-2. Распакуйте архив и перейдите в директорию с исходным кодом
-3. Настройте сборку статической версии Qt:
+*(Этот раздел требует адаптации под вашу систему сборки. Ниже приведен общий шаблон.)*
 
+**Зависимости:**
+*   Qt (например, Qt 5.15 или новее)
+*   VTK (например, VTK 9.0 или новее)
+*   Компилятор C++ (поддерживающий C++11 или новее, например, GCC, MSVC, Clang)
+*   CMake (например, CMake 3.10 или новее)
+
+**Примерные шаги сборки (Linux/macOS):**
 ```bash
-# Windows
-configure -static -release -prefix C:\Qt\static -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -opengl desktop -no-openssl -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
+# Убедитесь, что все зависимости установлены
+# Например, для Ubuntu:
+# sudo apt-get install build-essential qtcreator qt5-default libvtk9-dev cmake
 
-# Linux/macOS
-./configure -static -release -prefix /opt/Qt/static -qt-zlib -qt-pcre -qt-libpng -qt-libjpeg -qt-freetype -no-openssl -opensource -confirm-license -make libs -nomake tools -nomake examples -nomake tests
-```
-
-4. Выполните сборку:
-
-```bash
-# Windows
-nmake
-nmake install
-
-# Linux/macOS
-make -j$(nproc)
-make install
-```
-
-#### 2. Сборка статической версии VTK
-
-1. Скачайте исходный код VTK с [официального сайта](https://vtk.org/download/)
-2. Создайте директорию для сборки и перейдите в нее:
-
-```bash
-mkdir vtk-build
-cd vtk-build
-```
-
-3. Настройте сборку статической версии VTK с помощью CMake:
-
-```bash
-# Windows
-cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DVTK_GROUP_ENABLE_Qt=YES -DVTK_QT_VERSION=5 -DQt5_DIR=C:\Qt\static\lib\cmake\Qt5 -DCMAKE_INSTALL_PREFIX=C:\VTK\static ..\VTK-9.x.x
-
-# Linux/macOS
-cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DVTK_GROUP_ENABLE_Qt=YES -DVTK_QT_VERSION=5 -DQt5_DIR=/opt/Qt/static/lib/cmake/Qt5 -DCMAKE_INSTALL_PREFIX=/opt/VTK/static ../VTK-9.x.x
-```
-
-4. Выполните сборку:
-
-```bash
-# Windows
-cmake --build . --config Release --target INSTALL
-
-# Linux/macOS
-make -j$(nproc)
-make install
-```
-
-#### 3. Сборка проекта симуляции
-
-1. Создайте файл CMakeLists.txt в корневой директории проекта:
-
-```cmake
-cmake_minimum_required(VERSION 3.10)
-project(ArtillerySimulation)
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# Статическая сборка с MSVC
-if(MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-endif()
-
-# Пути к статическим библиотекам Qt и VTK
-# Windows
-if(WIN32)
-    set(Qt5_DIR "C:/Qt/static/lib/cmake/Qt5")
-    set(VTK_DIR "C:/VTK/static/lib/cmake/vtk-9.x")
-else()
-    # Linux/macOS
-    set(Qt5_DIR "/opt/Qt/static/lib/cmake/Qt5")
-    set(VTK_DIR "/opt/VTK/static/lib/cmake/vtk-9.x")
-endif()
-
-# Найти пакеты
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-find_package(VTK REQUIRED)
-
-# Включить автоматическую обработку Qt (moc, uic, rcc)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
-
-# Исходные файлы проекта
-set(SOURCES
-    main.cpp
-    mainwindow.cpp
-    simulation.cpp
-)
-
-set(HEADERS
-    mainwindow.h
-    simulation.h
-)
-
-# Создание исполняемого файла
-add_executable(ArtillerySimulation ${SOURCES} ${HEADERS})
-
-# Связывание с библиотеками
-target_link_libraries(ArtillerySimulation PRIVATE Qt5::Core Qt5::Widgets ${VTK_LIBRARIES})
-
-# Включить модули VTK
-vtk_module_autoinit(
-    TARGETS ArtillerySimulation
-    MODULES ${VTK_MODULES_USED}
-)
-
-# Настройка для создания автономного исполняемого файла
-if(WIN32)
-    # Для Windows используем статическую линковку рантайма
-    set_target_properties(ArtillerySimulation PROPERTIES
-        WIN32_EXECUTABLE TRUE
-        LINK_FLAGS "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
-    )
-endif()
-
-# Копирование необходимых DLL файлов (если остались зависимости)
-if(WIN32)
-    # Настройка установки
-    install(TARGETS ArtillerySimulation DESTINATION .)
-    
-    # Использование windeployqt для сборки зависимостей
-    find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
-    if(WINDEPLOYQT_EXECUTABLE)
-        add_custom_command(TARGET ArtillerySimulation POST_BUILD
-            COMMAND "${WINDEPLOYQT_EXECUTABLE}" --no-translations --no-system-d3d-compiler "$<TARGET_FILE:ArtillerySimulation>"
-            COMMENT "Running windeployqt..."
-        )
-    endif()
-endif()
-```
-
-2. Создайте директорию для сборки и перейдите в нее:
-
-```bash
 mkdir build
 cd build
+cmake .. 
+make
+# Запуск из директории build
+./YourProjectName 
 ```
 
-3. Настройте сборку проекта:
-
+**Примерные шаги сборки (Windows c MSVC):**
 ```bash
-# Windows
-cmake -DCMAKE_BUILD_TYPE=Release ..
-
-# Linux/macOS
-cmake -DCMAKE_BUILD_TYPE=Release ..
-```
-
-4. Выполните сборку:
-
-```bash
-# Windows
+# Убедитесь, что Qt и VTK установлены и их пути известны CMake
+# (например, через переменные окружения QT_DIR, VTK_DIR или указаны в CMakeLists.txt)
+mkdir build
+cd build
+# Укажите генератор для вашей версии Visual Studio
+cmake .. -G "Visual Studio 16 2019" 
+# Открыть .sln файл в Visual Studio и собрать проект (Build Solution)
+# Или использовать команду:
 cmake --build . --config Release
-
-# Linux/macOS
-make -j$(nproc)
+# Запустить .exe из директории сборки (например, build/Release/YourProjectName.exe)
 ```
+Замените `YourProjectName` на актуальное имя вашего исполняемого файла, указанное в `CMakeLists.txt`.
 
-### Альтернативный подход: использование статической сборки с MinGW
+## Как пользоваться
 
-Для Windows можно использовать MinGW для создания полностью статического исполняемого файла:
+1.  Запустите приложение.
+2.  На левой панели введите желаемые параметры для симуляции.
+3.  На правой панели будет отображаться 2D-предпросмотр траектории и результаты.
+4.  Используйте кнопки "Запустить симуляцию" или "Запустить анимацию" для просмотра 3D-визуализации.
+5.  Для анализа зависимостей используйте секцию "Построение графиков зависимостей".
+6.  Параметры можно сохранять и загружать с помощью соответствующих кнопок.
+7.  Для получения справки нажмите кнопку "Инструкция".
 
-1. Установите MinGW-w64
-2. Соберите Qt и VTK с MinGW
-3. Добавьте в CMakeLists.txt:
+## Автор
 
-```cmake
-if(MINGW)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static -static-libgcc -static-libstdc++")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -s")
-endif()
-```
-
-### Проверка зависимостей
-
-После сборки проекта вы можете проверить зависимости исполняемого файла:
-
-- Windows: используйте утилиту Dependency Walker
-- Linux: `ldd ./ArtillerySimulation`
-- macOS: `otool -L ./ArtillerySimulation`
-
-## Минимизация зависимостей от DLL
-
-Если полностью статическая сборка невозможна, вы можете минимизировать количество DLL-файлов:
-
-1. Используйте статическую линковку рантайма C++ (опция `/MT` для MSVC)
-2. Отключите ненужные функции Qt и VTK при конфигурации
-3. Используйте инструменты для анализа и уменьшения зависимостей:
-   - UPX для сжатия исполняемого файла
-   - Dependency Walker для анализа зависимостей
-
-## Распространение приложения
-
-Для распространения приложения с минимальным количеством DLL:
-
-1. Используйте инструмент windeployqt для Qt-приложений
-2. Создайте установщик с NSIS или WiX, который включит только необходимые DLL
-3. Рассмотрите возможность использования AppImage (Linux) или создания DMG (macOS)
-
-## Дополнительные советы
-
-- Отключите отладочную информацию в релизной сборке
-- Используйте оптимизации компилятора для уменьшения размера
-- Рассмотрите возможность использования Qt Quick/QML вместо Qt Widgets для уменьшения зависимостей
-- Для VTK отключите ненужные модули, чтобы уменьшить количество зависимостей 
+*(Заполните эту секцию)* 
