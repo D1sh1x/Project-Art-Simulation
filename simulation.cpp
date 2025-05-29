@@ -25,12 +25,22 @@
 #include <vector>
 #include <cmath>
 #include <sstream>
+#include <iomanip>
 #include <vtkButtonWidget.h>
 #include <vtkTexturedButtonRepresentation2D.h>
 #include <vtkTextWidget.h>
 #include <vtkTextRepresentation.h>
 #include <vtkCoordinate.h>
 #include <vtkProperty2D.h>
+#include <vtkCubeAxesActor.h>
+
+// Declare a global or class member vtkTextActor for coordinates
+// To be accessed by AnimationCallback
+// Better approach: Pass it via a setter to AnimationCallback instance
+vtkSmartPointer<vtkTextActor> g_coordinatesActor = nullptr;
+
+// Глобальная переменная для хранения максимальных координат, чтобы vtkCubeAxesActor мог их использовать
+double max_coord_x = 10.0, max_coord_y = 10.0, max_coord_z = 10.0;
 
 State compute_derivatives(const State& state, const Parameters& params) {
     State derivatives;
@@ -123,6 +133,10 @@ public:
         this->renderer = renderer;
     }
 
+    void SetCoordinatesActor(vtkTextActor* actor) {
+        coordinatesActor = actor;
+    }
+
     void InitializeTrajectoryActors() {
         // Создаем вектор для хранения акторов отрезков траектории
         trajectoryActors.clear();
@@ -138,6 +152,16 @@ public:
             
             // Обновляем положение снаряда
             sphereActor->SetPosition(state.x, state.y, state.z);
+            
+            // Обновляем текст с координатами снаряда
+            if (coordinatesActor) {
+                std::stringstream ss;
+                ss << std::fixed << std::setprecision(2) 
+                   << "X: " << state.x 
+                   << " Y: " << state.y 
+                   << " Z: " << state.z;
+                coordinatesActor->SetInput(ss.str().c_str());
+            }
             
             // Добавляем новую точку в траекторию
             points->InsertNextPoint(state.x, state.y, state.z);
@@ -195,6 +219,7 @@ private:
     int currentPointIndex = 0;
     int maxPoints = 0;
     double animationSpeed = 1.0;
+    vtkTextActor* coordinatesActor = nullptr; // Член класса для хранения указателя на текстовый актор координат
 };
 
 // Function to close the render window
@@ -254,6 +279,40 @@ void StartSimulation(Parameters params) {
         states.push_back(state);
         state = runge_kutta_step(state, params, dt);
     } while (state.y + dt * state.vy >= 0.0);
+
+    // Находим максимальные и минимальные значения координат для настройки vtkCubeAxesActor (Шаг 1.3)
+    double actual_min_x = 0.0, actual_max_x = 0.0;
+    double actual_min_y = 0.0, actual_max_y = 0.0; // Y всегда от 0, но найдем макс
+    double actual_min_z = 0.0, actual_max_z = 0.0;
+
+    if (!states.empty()) {
+        actual_min_x = states[0].x; actual_max_x = states[0].x;
+        actual_min_y = states[0].y; actual_max_y = states[0].y; // y начинается с 0 или params.initial_height
+        actual_min_z = states[0].z; actual_max_z = states[0].z;
+
+        for (const auto& s_coord : states) {
+            actual_min_x = std::min(actual_min_x, s_coord.x);
+            actual_max_x = std::max(actual_max_x, s_coord.x);
+            actual_min_y = std::min(actual_min_y, s_coord.y); // Хотя обычно y >= 0
+            actual_max_y = std::max(actual_max_y, s_coord.y);
+            actual_min_z = std::min(actual_min_z, s_coord.z);
+            actual_max_z = std::max(actual_max_z, s_coord.z);
+        }
+    }
+    // Добавляем небольшой отступ (padding), чтобы траектория не прилипала к границам
+    double x_range = actual_max_x - actual_min_x;
+    double y_range = actual_max_y - 0; // Y ось обычно от 0
+    double z_range = actual_max_z - actual_min_z;
+    double padding = std::max({x_range, y_range, z_range}) * 0.1 + 1.0; // 10% от макс. диапазона + немного
+
+    actual_min_x -= padding;
+    actual_max_x += padding;
+    actual_max_y += padding; // Нижняя граница Y остается 0 (или params.initial_height если > 0)
+    actual_min_z -= padding;
+    actual_max_z += padding;
+    
+    // Убедимся, что нижняя граница Y не ниже 0
+    actual_min_y = std::min(0.0, actual_min_y); 
 
     // Создание точек траектории
     auto points = vtkSmartPointer<vtkPoints>::New();
@@ -327,11 +386,13 @@ void StartSimulation(Parameters params) {
     windActor->GetProperty()->SetOpacity(0.5);
 
     // Добавление осей координат
-    auto axes = vtkSmartPointer<vtkAxesActor>::New();
-    axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
-    
-    // Упрощенная настройка осей
-    axes->AxisLabelsOff();  // Отключаем метки осей для простоты
+    // auto axes = vtkSmartPointer<vtkAxesActor>::New();
+    // axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
+    // axes->AxisLabelsOff(); // Убираем отключение меток, чтобы они отображались
+    // Настройка меток осей (можно настроить цвет, шрифт и т.д. при необходимости)
+    // axes->SetXAxisLabelText("X");
+    // axes->SetYAxisLabelText("Y");
+    // axes->SetZAxisLabelText("Z");
 
     // Создание текстовых меток
     auto CreateTextActor = [](const std::string& text, int y_pos) {
@@ -355,15 +416,7 @@ void StartSimulation(Parameters params) {
     double total_distance = std::sqrt(distance_x * distance_x + distance_z * distance_z);
 
     // Поднимаем все тексты выше, чтобы они были видны
-    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height) + " m", 160);
-    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time) + " s", 140);
-    auto textDistanceX = CreateTextActor("Distance X: " + std::to_string(distance_x) + " m", 120);
-    auto textDistanceZ = CreateTextActor("Distance Z: " + std::to_string(distance_z) + " m", 100);
-    auto textTotalDistance = CreateTextActor("Total Distance: " + std::to_string(total_distance) + " m", 80);
-    auto textWindX = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + " m/s", 60);
-    auto textWindZ = CreateTextActor("Wind Z: " + std::to_string(params.wind_z) + " m/s", 40);
-    auto textMass = CreateTextActor("Mass: " + std::to_string(params.mass) + " kg", 20);
-    auto textRadius = CreateTextActor("Radius: " + std::to_string(params.radius) + " m", 0);
+
 
     // Настройка рендерера
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -372,17 +425,43 @@ void StartSimulation(Parameters params) {
     renderer->AddActor(sphereActor);
     renderer->AddActor(groundActor);
     renderer->AddActor(windActor);
-    renderer->AddActor(axes);
-    renderer->AddActor2D(textMaxHeight);
-    renderer->AddActor2D(textFlightTime);
-    renderer->AddActor2D(textDistanceX);
-    renderer->AddActor2D(textDistanceZ);
-    renderer->AddActor2D(textTotalDistance);
-    renderer->AddActor2D(textWindX);
-    renderer->AddActor2D(textWindZ);
-    renderer->AddActor2D(textMass);
-    renderer->AddActor2D(textRadius);
+    // renderer->AddActor(axes); // Закомментировано
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
+
+    // Создание и настройка vtkCubeAxesActor (Шаг 1.2)
+    auto cubeAxesActor = vtkSmartPointer<vtkCubeAxesActor>::New();
+    cubeAxesActor->SetCamera(renderer->GetActiveCamera()); // Используем камеру рендерера
+    
+    // Настройка внешнего вида (цвета можно взять из colors, если vtkNamedColors используется)
+    // Для примера, пока зададим черным цветом
+    cubeAxesActor->GetTitleTextProperty(0)->SetColor(0.0, 0.0, 0.0);
+    cubeAxesActor->GetLabelTextProperty(0)->SetColor(0.0, 0.0, 0.0);
+    cubeAxesActor->GetTitleTextProperty(1)->SetColor(0.0, 0.0, 0.0);
+    cubeAxesActor->GetLabelTextProperty(1)->SetColor(0.0, 0.0, 0.0);
+    cubeAxesActor->GetTitleTextProperty(2)->SetColor(0.0, 0.0, 0.0);
+    cubeAxesActor->GetLabelTextProperty(2)->SetColor(0.0, 0.0, 0.0);
+
+    cubeAxesActor->SetXTitle("X (m)");
+    cubeAxesActor->SetYTitle("Y (m)");
+    cubeAxesActor->SetZTitle("Z (m)");
+
+    // Обновляем границы vtkCubeAxesActor (Шаг 1.3)
+    cubeAxesActor->SetBounds(actual_min_x, actual_max_x, actual_min_y, actual_max_y, actual_min_z, actual_max_z); 
+
+    // Настройка отображения сетки (Шаг 1.4)
+    cubeAxesActor->SetFlyModeToOuterEdges(); // Режим отображения осей
+    cubeAxesActor->DrawXGridlinesOn();
+    cubeAxesActor->DrawYGridlinesOn();
+    cubeAxesActor->DrawZGridlinesOn();
+    // Установка цвета сетки (альтернативный способ)
+    cubeAxesActor->GetXAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+    cubeAxesActor->GetYAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+    cubeAxesActor->GetZAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+    // cubeAxesActor->XAxisMinorTickVisibilityOff(); // Опционально: убрать мелкие деления
+    // cubeAxesActor->YAxisMinorTickVisibilityOff();
+    // cubeAxesActor->ZAxisMinorTickVisibilityOff();
+
+    renderer->AddActor(cubeAxesActor); // Добавляем cubeAxesActor к рендереру
 
     // Add "3D Simulation" label
     auto simulationLabel = vtkSmartPointer<vtkTextActor>::New();
@@ -401,6 +480,10 @@ void StartSimulation(Parameters params) {
     renderWindow->SetSize(1200, 800);
     renderWindow->SetWindowName("3D Projectile Trajectory");
     renderWindow->Render();
+
+    // Сброс камеры для охвата всей сцены (Шаг 2)
+    renderer->ResetCamera();
+    renderer->ResetCameraClippingRange();
 
     // Интерактивный режим
     auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
@@ -437,7 +520,21 @@ void StartSimulation(Parameters params) {
 
     buttonWidget->On();
 
+    // Создаем и настраиваем обработчик анимации
+    auto animationCallback = vtkSmartPointer<AnimationCallback>::New();
+    animationCallback->SetSphereActor(sphereActor);
+    animationCallback->SetTrajectoryPoints(states);
+    animationCallback->SetRenderWindow(renderWindow);
+    animationCallback->SetRenderer(renderer);
+    animationCallback->SetSpeed(2.0); // Скорость анимации
+    animationCallback->InitializeTrajectoryActors(); // Инициализируем акторы траектории
+
+    // Добавляем обработчик таймера
     interactor->Initialize();
+    interactor->AddObserver(vtkCommand::TimerEvent, animationCallback);
+    int timerId = interactor->CreateRepeatingTimer(30); // 30 мс между кадрами (примерно 33 кадра в секунду)
+
+    // Запускаем интерактор
     interactor->Start();
 }
 
@@ -460,6 +557,37 @@ void StartAnimatedSimulation(Parameters params) {
         states.push_back(state);
         state = runge_kutta_step(state, params, dt);
     } while (state.y + dt * state.vy >= 0.0);
+
+    // Находим максимальные и минимальные значения координат для настройки vtkCubeAxesActor (Шаг 2.2)
+    double anim_min_x = 0.0, anim_max_x = 0.0;
+    double anim_min_y = 0.0, anim_max_y = 0.0; 
+    double anim_min_z = 0.0, anim_max_z = 0.0;
+
+    if (!states.empty()) {
+        anim_min_x = states[0].x; anim_max_x = states[0].x;
+        anim_min_y = states[0].y; anim_max_y = states[0].y;
+        anim_min_z = states[0].z; anim_max_z = states[0].z;
+
+        for (const auto& s_coord : states) {
+            anim_min_x = std::min(anim_min_x, s_coord.x);
+            anim_max_x = std::max(anim_max_x, s_coord.x);
+            anim_min_y = std::min(anim_min_y, s_coord.y);
+            anim_max_y = std::max(anim_max_y, s_coord.y);
+            anim_min_z = std::min(anim_min_z, s_coord.z);
+            anim_max_z = std::max(anim_max_z, s_coord.z);
+        }
+    }
+    double x_range_anim = anim_max_x - anim_min_x;
+    double y_range_anim = anim_max_y - 0; 
+    double z_range_anim = anim_max_z - anim_min_z;
+    double padding_anim = std::max({x_range_anim, y_range_anim, z_range_anim}) * 0.1 + 1.0; 
+
+    anim_min_x -= padding_anim;
+    anim_max_x += padding_anim;
+    anim_max_y += padding_anim; 
+    anim_min_z -= padding_anim;
+    anim_max_z += padding_anim;
+    anim_min_y = std::min(0.0, anim_min_y);
 
     // Создание снаряда
     auto sphere = vtkSmartPointer<vtkSphereSource>::New();
@@ -504,11 +632,14 @@ void StartAnimatedSimulation(Parameters params) {
     windActor->GetProperty()->SetOpacity(0.5);
 
     // Добавление осей координат
-    auto axes = vtkSmartPointer<vtkAxesActor>::New();
-    axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
+    // auto axes = vtkSmartPointer<vtkAxesActor>::New();
+    // axes->SetTotalLength(15, 15, 15);  // Увеличиваем длину осей
     
-    // Упрощенная настройка осей
-    axes->AxisLabelsOff();  // Отключаем метки осей для простоты
+    // Настройка меток осей
+    // axes->AxisLabelsOn(); 
+    // axes->SetXAxisLabelText("X");
+    // axes->SetYAxisLabelText("Y");
+    // axes->SetZAxisLabelText("Z");
 
     // Создание текстовых меток
     auto CreateTextActor = [](const std::string& text, int y_pos) {
@@ -532,16 +663,14 @@ void StartAnimatedSimulation(Parameters params) {
     double total_distance = std::sqrt(distance_x * distance_x + distance_z * distance_z);
 
     // Поднимаем все тексты выше, чтобы они были видны
-    auto textMaxHeight = CreateTextActor("Max Height: " + std::to_string(max_height) + " m", 160);
-    auto textFlightTime = CreateTextActor("Flight Time: " + std::to_string(flight_time) + " s", 140);
-    auto textDistanceX = CreateTextActor("Distance X: " + std::to_string(distance_x) + " m", 120);
-    auto textDistanceZ = CreateTextActor("Distance Z: " + std::to_string(distance_z) + " m", 100);
-    auto textTotalDistance = CreateTextActor("Total Distance: " + std::to_string(total_distance) + " m", 80);
-    auto textWindX = CreateTextActor("Wind X: " + std::to_string(params.wind_x) + " m/s", 60);
-    auto textWindZ = CreateTextActor("Wind Z: " + std::to_string(params.wind_z) + " m/s", 40);
-    auto textMass = CreateTextActor("Mass: " + std::to_string(params.mass) + " kg", 20);
-    auto textRadius = CreateTextActor("Radius: " + std::to_string(params.radius) + " m", 0);
 
+
+    // Создание текстового актора для координат снаряда (для анимации)
+    g_coordinatesActor = vtkSmartPointer<vtkTextActor>::New();
+    g_coordinatesActor->GetTextProperty()->SetFontSize(18);
+    g_coordinatesActor->GetTextProperty()->SetColor(0.0, 0.0, 0.0); // Черный цвет
+    g_coordinatesActor->SetPosition(20, 80); // Позиция в левом нижнем углу, выше кнопки "Back to menu" и ниже других текстов
+    g_coordinatesActor->SetInput("X: 0.00 Y: 0.00 Z: 0.00"); // Начальный текст
 
     // Настройка рендерера
     auto colors = vtkSmartPointer<vtkNamedColors>::New();
@@ -549,17 +678,43 @@ void StartAnimatedSimulation(Parameters params) {
     renderer->AddActor(sphereActor);
     renderer->AddActor(groundActor);
     renderer->AddActor(windActor);
-    renderer->AddActor(axes);
-    renderer->AddActor2D(textMaxHeight);
-    renderer->AddActor2D(textFlightTime);
-    renderer->AddActor2D(textDistanceX);
-    renderer->AddActor2D(textDistanceZ);
-    renderer->AddActor2D(textTotalDistance);
-    renderer->AddActor2D(textWindX);
-    renderer->AddActor2D(textWindZ);
-    renderer->AddActor2D(textMass);
-    renderer->AddActor2D(textRadius);
+    // renderer->AddActor(axes); // Закомментировано (или удалить, если точно не нужен)
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
+
+    // Удаляем некорректно добавленный ранее cubeAxesActor, чтобы избежать дублирования
+    // Этот блок нужно будет найти и удалить или изменить, если он был создан ранее в этой функции
+    // ОБРАТИТЕ ВНИМАНИЕ: если предыдущий шаг добавил cubeAxesActor в StartAnimatedSimulation,
+    // этот код нужно адаптировать, чтобы не создавать его дважды, а обновить существующий.
+    // На данном этапе предполагается, что мы его создаем заново здесь корректно.
+
+    // Создание и настройка vtkCubeAxesActor для анимированной симуляции (Шаг 2.2)
+    auto animCubeAxesActor = vtkSmartPointer<vtkCubeAxesActor>::New();
+    animCubeAxesActor->SetCamera(renderer->GetActiveCamera());
+    
+    animCubeAxesActor->GetTitleTextProperty(0)->SetColor(0.0, 0.0, 0.0);
+    animCubeAxesActor->GetLabelTextProperty(0)->SetColor(0.0, 0.0, 0.0);
+    animCubeAxesActor->GetTitleTextProperty(1)->SetColor(0.0, 0.0, 0.0);
+    animCubeAxesActor->GetLabelTextProperty(1)->SetColor(0.0, 0.0, 0.0);
+    animCubeAxesActor->GetTitleTextProperty(2)->SetColor(0.0, 0.0, 0.0);
+    animCubeAxesActor->GetLabelTextProperty(2)->SetColor(0.0, 0.0, 0.0);
+
+    animCubeAxesActor->SetXTitle("X (m)");
+    animCubeAxesActor->SetYTitle("Y (m)");
+    animCubeAxesActor->SetZTitle("Z (m)");
+
+    animCubeAxesActor->SetBounds(anim_min_x, anim_max_x, anim_min_y, anim_max_y, anim_min_z, anim_max_z);
+    
+    animCubeAxesActor->SetFlyModeToOuterEdges();
+    animCubeAxesActor->DrawXGridlinesOn();
+    animCubeAxesActor->DrawYGridlinesOn();
+    animCubeAxesActor->DrawZGridlinesOn();
+    // Установка цвета сетки (альтернативный способ)
+    animCubeAxesActor->GetXAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+    animCubeAxesActor->GetYAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+    animCubeAxesActor->GetZAxesGridlinesProperty()->SetColor(0.0, 0.0, 0.0); // Черный
+
+    renderer->AddActor(animCubeAxesActor); // Добавляем настроенный cubeAxesActor
+    renderer->AddActor2D(g_coordinatesActor); // Убедимся, что это добавлено ПОСЛЕ настройки renderer
 
     // Add "3D Simulation" label
     auto simulationLabel = vtkSmartPointer<vtkTextActor>::New();
@@ -577,6 +732,10 @@ void StartAnimatedSimulation(Parameters params) {
     renderWindow->SetSize(1200, 800);
     renderWindow->SetWindowName("3D Projectile Trajectory Animation");
     renderWindow->Render();
+
+    // Сброс камеры для охвата всей сцены (Шаг 2)
+    renderer->ResetCamera();
+    renderer->ResetCameraClippingRange();
 
     // Интерактивный режим
     auto interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
@@ -621,6 +780,7 @@ void StartAnimatedSimulation(Parameters params) {
     animationCallback->SetRenderer(renderer);
     animationCallback->SetSpeed(2.0); // Скорость анимации
     animationCallback->InitializeTrajectoryActors(); // Инициализируем акторы траектории
+    animationCallback->SetCoordinatesActor(g_coordinatesActor); // Передаем актор координат в callback
 
     // Добавляем обработчик таймера
     interactor->Initialize();
