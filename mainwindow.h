@@ -31,8 +31,10 @@ private slots:
     void onPlotDependencyGraph(); // New slot for plotting
     void onBackToTrajectoryPreview(); // Slot to switch back to trajectory preview
     void onShowInstructions(); // Slot to show instructions
+    void updateGraphParamRanges(int index); // Slot to update graph parameter input ranges dynamically
 
 private:
+    bool validateCurrentParameters(Parameters& params); // Helper function to validate current parameters
     QMap<QString, QDoubleSpinBox*> inputFields;
     QTextEdit *outputArea;
     QPushButton *runButton;
@@ -67,6 +69,7 @@ private:
         double max_height = 0.0;
         double total_distance = 0.0;
         double flight_time = 0.0;
+        bool data_is_valid = true; // Flag to indicate if the simulation produced a usable result
     };
     // Helper function to run a single simulation for graph data
     SimulationResult runSingleSimulationForGraph(Parameters params);

@@ -55,15 +55,38 @@ void MainWindow::setupUI() {
     // Создаем поля ввода
     for (const auto& paramInfo : paramInfoList) {
         QDoubleSpinBox *spinBox = new QDoubleSpinBox(this);
-        spinBox->setRange(-1e6, 1e6);
         spinBox->setDecimals(3);
         spinBox->setValue(paramInfo.defaultValue);
+
+        // Apply specific validation ranges for user guidance
+        if (paramInfo.key == "mass") {
+            spinBox->setRange(0.001, 1e6); // Mass > 0
+        } else if (paramInfo.key == "Cd") {
+            spinBox->setRange(0.0, 1e6);    // Cd >= 0
+        } else if (paramInfo.key == "air_density") {
+            spinBox->setRange(0.0, 1e6);    // Air density >= 0
+        } else if (paramInfo.key == "radius") {
+            spinBox->setRange(0.001, 1e3);  // Radius > 0
+        } else if (paramInfo.key == "g") {
+            spinBox->setRange(0.001, 100.0); // g > 0
+        } else if (paramInfo.key == "angle_deg") {
+            spinBox->setRange(0.0, 90.0);   // Angle 0-90
+        } else if (paramInfo.key == "initial_speed") {
+            spinBox->setRange(0.001, 1e6);  // Initial speed > 0
+        } else if (paramInfo.key == "wind_x" || paramInfo.key == "wind_z") {
+            spinBox->setRange(-1000.0, 1000.0); // Wind speed can be negative
+        } else if (paramInfo.key == "azimuth_deg") {
+            spinBox->setRange(0.0, 360.0);   // Azimuth 0-360
+        } else {
+            spinBox->setRange(-1e6, 1e6); // Default for others
+        }
+
         inputFields[paramInfo.key] = spinBox;
         formLayout->addRow(paramInfo.russianName, spinBox);
         
         // Подключаем сигнал изменения значения к обновлению предпросмотра
-        connect(spinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), 
-                [this]() { calculatePreviewTrajectory(); });
+        connect(spinBox, &QDoubleSpinBox::editingFinished, 
+                this, &MainWindow::calculatePreviewTrajectory);
     }
 
     // Создаем кнопки
@@ -112,12 +135,34 @@ void MainWindow::setupUI() {
     // Добавляем типы графиков
     graphTypeComboBox->addItem("Дальность от Начальной скорости", QVariant::fromValue(0));
     graphTypeComboBox->addItem("Высота от Начальной скорости", QVariant::fromValue(1));
-    graphTypeComboBox->addItem("Дальность от Угла", QVariant::fromValue(2));
-    graphTypeComboBox->addItem("Высота от Угла", QVariant::fromValue(3));
-    graphTypeComboBox->addItem("Дальность от Массы", QVariant::fromValue(4));
-    graphTypeComboBox->addItem("Высота от Массы", QVariant::fromValue(5));
-    graphTypeComboBox->addItem("Дальность от Ветра X", QVariant::fromValue(6));
-    graphTypeComboBox->addItem("Время полета от Начальной скорости", QVariant::fromValue(7));
+    graphTypeComboBox->addItem("Время полета от Начальной скорости", QVariant::fromValue(2)); 
+    graphTypeComboBox->addItem("Дальность от Угла", QVariant::fromValue(3));
+    graphTypeComboBox->addItem("Высота от Угла", QVariant::fromValue(4));
+    graphTypeComboBox->addItem("Время полета от Угла", QVariant::fromValue(5));
+    graphTypeComboBox->addItem("Дальность от Массы", QVariant::fromValue(6));
+    graphTypeComboBox->addItem("Высота от Массы", QVariant::fromValue(7));
+    graphTypeComboBox->addItem("Время полета от Массы", QVariant::fromValue(8));
+    graphTypeComboBox->addItem("Дальность от Коэф. сопр.", QVariant::fromValue(9));
+    graphTypeComboBox->addItem("Высота от Коэф. сопр.", QVariant::fromValue(10));
+    graphTypeComboBox->addItem("Время полета от Коэф. сопр.", QVariant::fromValue(11));
+    graphTypeComboBox->addItem("Дальность от Плотности воздуха", QVariant::fromValue(12));
+    graphTypeComboBox->addItem("Высота от Плотности воздуха", QVariant::fromValue(13));
+    graphTypeComboBox->addItem("Время полета от Плотности воздуха", QVariant::fromValue(14));
+    graphTypeComboBox->addItem("Дальность от Радиуса", QVariant::fromValue(15));
+    graphTypeComboBox->addItem("Высота от Радиуса", QVariant::fromValue(16));
+    graphTypeComboBox->addItem("Время полета от Радиуса", QVariant::fromValue(17));
+    graphTypeComboBox->addItem("Дальность от Ветра X", QVariant::fromValue(18));
+    graphTypeComboBox->addItem("Высота от Ветра X", QVariant::fromValue(19));
+    graphTypeComboBox->addItem("Время полета от Ветра X", QVariant::fromValue(20));
+    graphTypeComboBox->addItem("Дальность от Ветра Z", QVariant::fromValue(21));
+    graphTypeComboBox->addItem("Высота от Ветра Z", QVariant::fromValue(22));
+    graphTypeComboBox->addItem("Время полета от Ветра Z", QVariant::fromValue(23));
+    graphTypeComboBox->addItem("Дальность от Азимута", QVariant::fromValue(24));
+    graphTypeComboBox->addItem("Высота от Азимута", QVariant::fromValue(25));
+    graphTypeComboBox->addItem("Время полета от Азимута", QVariant::fromValue(26));
+
+    connect(graphTypeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::updateGraphParamRanges);
+
     graphTypeLayout->addWidget(graphTypeComboBox);
     graphLayout->addLayout(graphTypeLayout);
 
@@ -193,6 +238,8 @@ void MainWindow::setupUI() {
 
     // Устанавливаем главную компоновку
     centralWidget->setLayout(mainHLayout);
+
+    updateGraphParamRanges(0); // Initialize graph parameter ranges
 }
 
 void MainWindow::setupPreviewVisualization() {
@@ -436,42 +483,18 @@ void MainWindow::updatePreviewVisualization() {
 }
 
 void MainWindow::onRunSimulation() {
-    // Создаем и заполняем структуру Parameters
     Parameters params;
-    
-    // Получаем значения из полей ввода
-    params.mass = inputFields["mass"]->value();
-    params.Cd = inputFields["Cd"]->value();
-    params.air_density = inputFields["air_density"]->value();
-    params.radius = inputFields["radius"]->value();
-    params.g = inputFields["g"]->value();
-    params.wind_x = inputFields["wind_x"]->value();
-    params.wind_z = inputFields["wind_z"]->value();
-    params.angle_deg = inputFields["angle_deg"]->value();
-    params.initial_speed = inputFields["initial_speed"]->value();
-    params.azimuth_deg = inputFields["azimuth_deg"]->value();
-
-    // Запускаем симуляцию с заполненными параметрами
+    if (!validateCurrentParameters(params)) {
+        return;
+    }
     StartSimulation(params);
 }
 
 void MainWindow::onRunAnimatedSimulation() {
-    // Создаем и заполняем структуру Parameters
     Parameters params;
-    
-    // Получаем значения из полей ввода
-    params.mass = inputFields["mass"]->value();
-    params.Cd = inputFields["Cd"]->value();
-    params.air_density = inputFields["air_density"]->value();
-    params.radius = inputFields["radius"]->value();
-    params.g = inputFields["g"]->value();
-    params.wind_x = inputFields["wind_x"]->value();
-    params.wind_z = inputFields["wind_z"]->value();
-    params.angle_deg = inputFields["angle_deg"]->value();
-    params.initial_speed = inputFields["initial_speed"]->value();
-    params.azimuth_deg = inputFields["azimuth_deg"]->value();
-
-    // Запускаем анимированную симуляцию с заполненными параметрами
+    if (!validateCurrentParameters(params)) {
+        return;
+    }
     StartAnimatedSimulation(params);
 }
 
@@ -676,141 +699,221 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
 
 
 void MainWindow::onPlotDependencyGraph() {
-    Parameters currentParams;
-    // Собираем базовые параметры из UI
-    currentParams.mass = inputFields["mass"]->value();
-    currentParams.Cd = inputFields["Cd"]->value();
-    currentParams.air_density = inputFields["air_density"]->value();
-    currentParams.radius = inputFields["radius"]->value();
-    currentParams.g = inputFields["g"]->value();
-    currentParams.wind_x = inputFields["wind_x"]->value();
-    currentParams.wind_z = inputFields["wind_z"]->value();
-    currentParams.angle_deg = inputFields["angle_deg"]->value();
-    currentParams.initial_speed = inputFields["initial_speed"]->value();
-    currentParams.azimuth_deg = inputFields["azimuth_deg"]->value();
+    // Validate graph specific parameters
+    if (graphParamMinSpinBox->value() >= graphParamMaxSpinBox->value()) {
+        QMessageBox::warning(this, "Ошибка параметров графика", "Минимальное значение параметра должно быть меньше максимального.");
+        return;
+    }
+    if (graphParamStepSpinBox->value() <= 0) {
+        QMessageBox::warning(this, "Ошибка параметров графика", "Шаг параметра должен быть больше нуля.");
+        return;
+    }
+
+    Parameters baseParams;
+    if (!validateCurrentParameters(baseParams)) { // Validate base parameters from main input fields
+        return;
+    }
 
     int graphTypeIndex = graphTypeComboBox->currentData().toInt();
     double paramMin = graphParamMinSpinBox->value();
     double paramMax = graphParamMaxSpinBox->value();
     double paramStep = graphParamStepSpinBox->value();
 
-    if (paramStep <= 0) {
-        outputArea->setText("Ошибка: Шаг параметра должен быть положительным.");
-        return;
-    }
-    if (paramMin >= paramMax) {
-        outputArea->setText("Ошибка: Минимальное значение параметра должно быть меньше максимального.");
-        return;
-    }
-
     QList<QPointF> dataPoints;
-    QString xAxisLabel, yAxisLabel;
-    
-    double currentXMin = std::numeric_limits<double>::max();
-    double currentXMax = std::numeric_limits<double>::lowest();
+    QString yLabel = "Y"; 
+    QString xLabel = "X"; 
     double currentYMin = std::numeric_limits<double>::max();
     double currentYMax = std::numeric_limits<double>::lowest();
+    double currentXMin = std::numeric_limits<double>::max();
+    double currentXMax = std::numeric_limits<double>::lowest();
 
+    // Determine labels based on graph type BEFORE the loop
+    switch (graphTypeIndex) {
+        case 0: case 1: case 2: xLabel = "Начальная скорость (м/с)"; break;
+        case 3: case 4: case 5: xLabel = "Угол (градусы)"; break;
+        case 6: case 7: case 8: xLabel = "Масса (кг)"; break;
+        case 9: case 10: case 11: xLabel = "Коэф. сопр."; break;
+        case 12: case 13: case 14: xLabel = "Плотность воздуха (кг/м³)"; break;
+        case 15: case 16: case 17: xLabel = "Радиус (м)"; break;
+        case 18: case 19: case 20: xLabel = "Ветер X (м/с)"; break;
+        case 21: case 22: case 23: xLabel = "Ветер Z (м/с)"; break;
+        case 24: case 25: case 26: xLabel = "Азимут (градусы)"; break;
+        default: xLabel = "Параметр"; break; 
+    }
+
+    switch (graphTypeIndex) { 
+        case 0: case 3: case 6: case 9: case 12: case 15: case 18: case 21: case 24: yLabel = "Дальность (м)"; break;
+        case 1: case 4: case 7: case 10: case 13: case 16: case 19: case 22: case 25: yLabel = "Макс. высота (м)"; break;
+        case 2: case 5: case 8: case 11: case 14: case 17: case 20: case 23: case 26: yLabel = "Время полета (с)"; break;
+        default: yLabel = "Результат"; break;
+    }
 
     for (double val = paramMin; val <= paramMax; val += paramStep) {
-        Parameters tempParams = currentParams;
+        Parameters tempParams = baseParams;
         SimulationResult result;
         double xValue = val;
 
+        // Apply the varying parameter and run simulation
+        // Also, add specific validation for the varying parameter if needed
         switch (graphTypeIndex) {
-            case 0: // Дальность от Начальной скорости
-                tempParams.initial_speed = val;
-                xAxisLabel = "Начальная скорость (м/с)";
-                yAxisLabel = "Дальность полета (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.total_distance));
-                currentYMin = std::min(currentYMin, result.total_distance);
-                currentYMax = std::max(currentYMax, result.total_distance);
-                break;
-            case 1: // Высота от Начальной скорости
-                tempParams.initial_speed = val;
-                xAxisLabel = "Начальная скорость (м/с)";
-                yAxisLabel = "Макс. высота (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.max_height));
-                currentYMin = std::min(currentYMin, result.max_height);
-                currentYMax = std::max(currentYMax, result.max_height);
-                break;
-            case 2: // Дальность от Угла
-                tempParams.angle_deg = val;
-                xAxisLabel = "Угол запуска (град)";
-                yAxisLabel = "Дальность полета (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.total_distance));
-                currentYMin = std::min(currentYMin, result.total_distance);
-                currentYMax = std::max(currentYMax, result.total_distance);
-                break;
-            case 3: // Высота от Угла
-                tempParams.angle_deg = val;
-                xAxisLabel = "Угол запуска (град)";
-                yAxisLabel = "Макс. высота (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.max_height));
-                currentYMin = std::min(currentYMin, result.max_height);
-                currentYMax = std::max(currentYMax, result.max_height);
-                break;
-            case 4: // Дальность от Массы
-                tempParams.mass = val;
-                 if (val <=0) continue; // Масса должна быть > 0
-                xAxisLabel = "Масса снаряда (кг)";
-                yAxisLabel = "Дальность полета (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.total_distance));
-                currentYMin = std::min(currentYMin, result.total_distance);
-                currentYMax = std::max(currentYMax, result.total_distance);
-                break;
-            case 5: // Высота от Массы
-                tempParams.mass = val;
-                if (val <=0) continue; // Масса должна быть > 0
-                xAxisLabel = "Масса снаряда (кг)";
-                yAxisLabel = "Макс. высота (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.max_height));
-                currentYMin = std::min(currentYMin, result.max_height);
-                currentYMax = std::max(currentYMax, result.max_height);
-                break;
-            case 6: // Дальность от Ветра X
-                tempParams.wind_x = val;
-                xAxisLabel = "Скорость ветра X (м/с)";
-                yAxisLabel = "Дальность полета (м)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.total_distance));
-                currentYMin = std::min(currentYMin, result.total_distance);
-                currentYMax = std::max(currentYMax, result.total_distance);
-                break;
-            case 7: // Время полета от Начальной скорости
-                tempParams.initial_speed = val;
-                xAxisLabel = "Начальная скорость (м/с)";
-                yAxisLabel = "Время полета (с)";
-                result = runSingleSimulationForGraph(tempParams);
-                dataPoints.append(QPointF(xValue, result.flight_time));
-                currentYMin = std::min(currentYMin, result.flight_time);
-                currentYMax = std::max(currentYMax, result.flight_time);
-                break;
+            // Начальная скорость
+            case 0: tempParams.initial_speed = val; if(val <=0) { /*QMessageBox::information(this, "Пропуск точки", "Начальная скорость <= 0 невалидна для графика.");*/ continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 1: tempParams.initial_speed = val; if(val <=0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 2: tempParams.initial_speed = val; if(val <=0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Угол
+            case 3: tempParams.angle_deg = val; if(val < 0 || val > 90) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 4: tempParams.angle_deg = val; if(val < 0 || val > 90) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 5: tempParams.angle_deg = val; if(val < 0 || val > 90) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Масса
+            case 6: tempParams.mass = val; if(val <=0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 7: tempParams.mass = val; if(val <=0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 8: tempParams.mass = val; if(val <=0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Коэф. сопр.
+            case 9: tempParams.Cd = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 10: tempParams.Cd = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 11: tempParams.Cd = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Плотность воздуха
+            case 12: tempParams.air_density = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 13: tempParams.air_density = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 14: tempParams.air_density = val; if(val < 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Радиус
+            case 15: tempParams.radius = val; if(val <= 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 16: tempParams.radius = val; if(val <= 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 17: tempParams.radius = val; if(val <= 0) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Ветер X
+            case 18: tempParams.wind_x = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 19: tempParams.wind_x = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 20: tempParams.wind_x = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Ветер Z
+            case 21: tempParams.wind_z = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 22: tempParams.wind_z = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 23: tempParams.wind_z = val; result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            // Азимут
+            case 24: tempParams.azimuth_deg = val; if(val < 0 || val > 360) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.total_distance)); break;
+            case 25: tempParams.azimuth_deg = val; if(val < 0 || val > 360) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.max_height)); break;
+            case 26: tempParams.azimuth_deg = val; if(val < 0 || val > 360) { continue; } result = runSingleSimulationForGraph(tempParams); dataPoints.append(QPointF(xValue, result.flight_time)); break;
+            default: outputArea->setText("Неизвестный тип графика."); return;
         }
-         currentXMin = std::min(currentXMin, xValue);
-         currentXMax = std::max(currentXMax, xValue);
+        
+        if (!result.data_is_valid) { // Check if simulation produced valid data for this point
+             // Optionally, inform user or just skip the point silently
+             // QMessageBox::information(this, "Пропуск точки", QString("Симуляция для параметра %1 = %2 не дала валидных результатов.").arg(xLabel).arg(xValue));
+             continue; // Skip this point if data is not valid
+        }
+
+        if (!dataPoints.isEmpty() || result.data_is_valid) { // Ensure we have a valid point to update min/max
+            double yValPoint = 0.0;
+            switch (graphTypeIndex) { // Get the correct Y value based on graph type
+                case 0: case 3: case 6: case 9: case 12: case 15: case 18: case 21: case 24: yValPoint = result.total_distance; break;
+                case 1: case 4: case 7: case 10: case 13: case 16: case 19: case 22: case 25: yValPoint = result.max_height; break;
+                case 2: case 5: case 8: case 11: case 14: case 17: case 20: case 23: case 26: yValPoint = result.flight_time; break;
+            }
+            currentYMin = std::min(currentYMin, yValPoint);
+            currentYMax = std::max(currentYMax, yValPoint);
+            currentXMin = std::min(currentXMin, xValue); 
+            currentXMax = std::max(currentXMax, xValue);
+        }
+    }
+
+    if (dataPoints.isEmpty()) {
+        outputArea->setText("Нет данных для построения графика. Убедитесь, что параметры и шаг корректны и хотя бы одна симуляция в диапазоне дала результат.");
+        currentXMin = paramMin;
+        currentXMax = paramMax;
+        currentYMin = 0; 
+        currentYMax = 1; 
     }
     
-    if (dataPoints.isEmpty()){
-        currentXMin = 0; currentXMax = 1; // Default if no points
-        currentYMin = 0; currentYMax = 1;
-    }
-
-
-    // Отключаем таймер предпросмотра, если он активен, чтобы он не мешал графику
     if (previewTimer->isActive()) {
         previewTimer->stop();
     }
-    // Очищаем текстовое поле результатов, так как теперь отображается график
     outputArea->clear();
+    drawDependencyGraph(dataPoints, xLabel, yLabel, currentXMin, currentXMax, currentYMin, currentYMax);
+}
 
-    drawDependencyGraph(dataPoints, xAxisLabel, yAxisLabel, currentXMin, currentXMax, currentYMin, currentYMax);
+void MainWindow::updateGraphParamRanges(int index) {
+    Q_UNUSED(index); // index is not directly used, we get data from comboBox
+    int graphTypeIndex = graphTypeComboBox->currentData().toInt();
+
+    double minVal = 0.0, maxVal = 100.0, stepVal = 5.0;
+    double paramSpinBoxMin = -1e6, paramSpinBoxMax = 1e6; // Default broad range for spinboxes
+
+    switch (graphTypeIndex) {
+        case 0: case 1: case 2: // Initial Speed
+            minVal = 1.0; maxVal = 200.0; stepVal = 10.0;
+            paramSpinBoxMin = 0.001; paramSpinBoxMax = 1e6;
+            break;
+        case 3: case 4: case 5: // Angle
+            minVal = 0.0; maxVal = 90.0; stepVal = 5.0;
+            paramSpinBoxMin = 0.0; paramSpinBoxMax = 90.0;
+            break;
+        case 6: case 7: case 8: // Mass
+            minVal = 1.0; maxVal = 100.0; stepVal = 5.0;
+            paramSpinBoxMin = 0.001; paramSpinBoxMax = 1e6;
+            break;
+        case 9: case 10: case 11: // Cd
+            minVal = 0.0; maxVal = 2.0; stepVal = 0.1;
+            paramSpinBoxMin = 0.0; paramSpinBoxMax = 10.0;
+            break;
+        case 12: case 13: case 14: // Air Density
+            minVal = 0.1; maxVal = 2.0; stepVal = 0.1;
+            paramSpinBoxMin = 0.0; paramSpinBoxMax = 5.0;
+            break;
+        case 15: case 16: case 17: // Radius
+            minVal = 0.01; maxVal = 1.0; stepVal = 0.05;
+            paramSpinBoxMin = 0.001; paramSpinBoxMax = 10.0;
+            break;
+        case 18: case 19: case 20: // Wind X
+            minVal = -50.0; maxVal = 50.0; stepVal = 5.0;
+            paramSpinBoxMin = -1000.0; paramSpinBoxMax = 1000.0;
+            break;
+        case 21: case 22: case 23: // Wind Z
+            minVal = -50.0; maxVal = 50.0; stepVal = 5.0;
+            paramSpinBoxMin = -1000.0; paramSpinBoxMax = 1000.0;
+            break;
+        case 24: case 25: case 26: // Azimuth
+            minVal = 0.0; maxVal = 360.0; stepVal = 15.0;
+            paramSpinBoxMin = 0.0; paramSpinBoxMax = 360.0;
+            break;
+        default:
+            // Keep broad defaults if type is unknown
+            break;
+    }
+    graphParamMinSpinBox->setRange(paramSpinBoxMin, paramSpinBoxMax);
+    graphParamMaxSpinBox->setRange(paramSpinBoxMin, paramSpinBoxMax); 
+    graphParamMinSpinBox->setValue(minVal);
+    graphParamMaxSpinBox->setValue(maxVal);
+    graphParamStepSpinBox->setValue(stepVal);
+    graphParamStepSpinBox->setRange(0.01, 1e6); // Ensure step spinbox range is always positive
+}
+
+bool MainWindow::validateCurrentParameters(Parameters& params) {
+    params.mass = inputFields["mass"]->value();
+    params.Cd = inputFields["Cd"]->value();
+    params.air_density = inputFields["air_density"]->value();
+    params.radius = inputFields["radius"]->value();
+    params.g = inputFields["g"]->value();
+    params.wind_x = inputFields["wind_x"]->value();
+    params.wind_z = inputFields["wind_z"]->value();
+    params.angle_deg = inputFields["angle_deg"]->value();
+    params.initial_speed = inputFields["initial_speed"]->value();
+    params.azimuth_deg = inputFields["azimuth_deg"]->value();
+
+    if (params.mass <= 0) { QMessageBox::warning(this, "Ошибка валидации", "Масса снаряда должна быть больше нуля."); return false; }
+    if (params.Cd < 0) { QMessageBox::warning(this, "Ошибка валидации", "Коэффициент сопротивления не может быть отрицательным."); return false; }
+    if (params.air_density < 0) { QMessageBox::warning(this, "Ошибка валидации", "Плотность воздуха не может быть отрицательной."); return false; }
+    if (params.radius <= 0) { QMessageBox::warning(this, "Ошибка валидации", "Радиус снаряда должен быть больше нуля."); return false; }
+    if (params.g <= 0) { QMessageBox::warning(this, "Ошибка валидации", "Ускорение свободного падения должно быть больше нуля."); return false; }
+    if (params.angle_deg < inputFields["angle_deg"]->minimum() || params.angle_deg > inputFields["angle_deg"]->maximum()) { 
+        QMessageBox::warning(this, "Ошибка валидации", QString("Угол запуска должен быть в диапазоне от %1 до %2 градусов.").arg(inputFields["angle_deg"]->minimum()).arg(inputFields["angle_deg"]->maximum())); 
+        return false; 
+    }
+    if (params.initial_speed <= 0) { QMessageBox::warning(this, "Ошибка валидации", "Начальная скорость должна быть больше нуля."); return false; }
+    if (params.azimuth_deg < inputFields["azimuth_deg"]->minimum() || params.azimuth_deg > inputFields["azimuth_deg"]->maximum()) { 
+        QMessageBox::warning(this, "Ошибка валидации", QString("Азимут должен быть в диапазоне от %1 до %2 градусов.").arg(inputFields["azimuth_deg"]->minimum()).arg(inputFields["azimuth_deg"]->maximum())); 
+        return false; 
+    }
+    
+    return true;
 }
 
 void MainWindow::onBackToTrajectoryPreview() {
