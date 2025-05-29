@@ -30,6 +30,7 @@ find_package(VTK REQUIRED
         InteractionStyle
         IOXML
         RenderingAnnotation
+        InteractionWidgets
 )
 
 # Добавление исполняемого файла
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     VTK::InteractionStyle
     VTK::IOXML
     VTK::RenderingAnnotation
+    VTK::InteractionWidgets
 )
 
 # Автоинициализация VTK модулей

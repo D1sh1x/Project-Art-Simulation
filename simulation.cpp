@@ -25,6 +25,12 @@
 #include <vector>
 #include <cmath>
 #include <sstream>
+#include <vtkButtonWidget.h>
+#include <vtkTexturedButtonRepresentation2D.h>
+#include <vtkTextWidget.h>
+#include <vtkTextRepresentation.h>
+#include <vtkCoordinate.h>
+#include <vtkProperty2D.h>
 
 State compute_derivatives(const State& state, const Parameters& params) {
     State derivatives;
@@ -191,6 +197,31 @@ private:
     double animationSpeed = 1.0;
 };
 
+// Function to close the render window
+class CloseWindowCallback : public vtkCommand {
+public:
+    static CloseWindowCallback* New() {
+        return new CloseWindowCallback;
+    }
+    void Execute(vtkObject* caller, unsigned long eventId, void* callData) override {
+        if (renderWindow) {
+            renderWindow->Finalize(); 
+            if (interactor) {
+                interactor->TerminateApp(); 
+            }
+        }
+    }
+    void SetRenderWindow(vtkRenderWindow* win) {
+        renderWindow = win;
+    }
+    void SetInteractor(vtkRenderWindowInteractor* inter) {
+		interactor = inter;
+	}
+private:
+    vtkRenderWindow* renderWindow = nullptr;
+    vtkRenderWindowInteractor* interactor = nullptr;
+};
+
 void StartSimulation(Parameters params) {
     //Parameters params = {
     //    10.0,    // mass
@@ -352,6 +383,17 @@ void StartSimulation(Parameters params) {
     renderer->AddActor2D(textMass);
     renderer->AddActor2D(textRadius);
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
+
+    // Add "3D Simulation" label
+    auto simulationLabel = vtkSmartPointer<vtkTextActor>::New();
+    simulationLabel->SetInput("3D Simulation");
+    simulationLabel->GetTextProperty()->SetFontSize(24);
+    simulationLabel->GetTextProperty()->SetColor(0.0, 0.0, 0.0); // Black color
+    simulationLabel->GetTextProperty()->SetJustificationToCentered();
+    // Position label at the top-center of the window. Adjust X as needed.
+    // Assuming window width is 1200, Y position 750 is near the top.
+    simulationLabel->SetPosition(600, 750); 
+    renderer->AddActor2D(simulationLabel);
     
     // Настройка окна
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
@@ -366,6 +408,34 @@ void StartSimulation(Parameters params) {
 
     auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
     interactor->SetInteractorStyle(style);
+
+    // Create "Back to Menu" button
+    auto textRepresentation = vtkSmartPointer<vtkTextRepresentation>::New();
+    textRepresentation->SetText("Back to Menu");
+    // Position and size the button in display coordinates
+    textRepresentation->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+    textRepresentation->GetPositionCoordinate()->SetValue(20, 20); // Bottom-left corner of the button
+    textRepresentation->GetPosition2Coordinate()->SetCoordinateSystemToDisplay();
+    textRepresentation->GetPosition2Coordinate()->SetValue(170, 60); // Top-right corner of the button
+
+    textRepresentation->GetTextActor()->GetTextProperty()->SetFontSize(18);
+    textRepresentation->GetTextActor()->GetTextProperty()->SetColor(0.1, 0.1, 0.1); // Dark grey text
+    textRepresentation->GetTextActor()->GetTextProperty()->SetJustificationToCentered();
+    textRepresentation->GetTextActor()->GetTextProperty()->SetVerticalJustificationToCentered();
+    textRepresentation->GetBorderProperty()->SetColor(0.2, 0.2, 0.2); // Darker grey border
+    textRepresentation->SetShowBorder(true);
+
+    auto buttonWidget = vtkSmartPointer<vtkTextWidget>::New();
+    buttonWidget->SetRepresentation(textRepresentation);
+    buttonWidget->SetInteractor(interactor);
+    buttonWidget->SetSelectable(true); 
+    
+    auto closeCallback = vtkSmartPointer<CloseWindowCallback>::New();
+    closeCallback->SetRenderWindow(renderWindow);
+    closeCallback->SetInteractor(interactor);
+    buttonWidget->AddObserver(vtkCommand::EndInteractionEvent, closeCallback); // Use EndInteractionEvent
+
+    buttonWidget->On();
 
     interactor->Initialize();
     interactor->Start();
@@ -490,6 +560,16 @@ void StartAnimatedSimulation(Parameters params) {
     renderer->AddActor2D(textMass);
     renderer->AddActor2D(textRadius);
     renderer->SetBackground(1.0, 1.0, 1.0); // Белый фон
+
+    // Add "3D Simulation" label
+    auto simulationLabel = vtkSmartPointer<vtkTextActor>::New();
+    simulationLabel->SetInput("3D Simulation");
+    simulationLabel->GetTextProperty()->SetFontSize(24);
+    simulationLabel->GetTextProperty()->SetColor(0.0, 0.0, 0.0); // Black color
+    simulationLabel->GetTextProperty()->SetJustificationToCentered();
+    // Position label at the top-center of the window. Adjust X as needed.
+    simulationLabel->SetPosition(600, 750);
+    renderer->AddActor2D(simulationLabel);
     
     // Настройка окна
     auto renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
@@ -504,6 +584,34 @@ void StartAnimatedSimulation(Parameters params) {
 
     auto style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
     interactor->SetInteractorStyle(style);
+
+    // Create "Back to Menu" button
+    auto textRepresentation = vtkSmartPointer<vtkTextRepresentation>::New();
+    textRepresentation->SetText("Back to Menu");
+    // Position and size the button in display coordinates
+    textRepresentation->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+    textRepresentation->GetPositionCoordinate()->SetValue(20, 20); // Bottom-left corner of the button
+    textRepresentation->GetPosition2Coordinate()->SetCoordinateSystemToDisplay();
+    textRepresentation->GetPosition2Coordinate()->SetValue(170, 60); // Top-right corner of the button
+
+    textRepresentation->GetTextActor()->GetTextProperty()->SetFontSize(18);
+    textRepresentation->GetTextActor()->GetTextProperty()->SetColor(0.1, 0.1, 0.1); // Dark grey text
+    textRepresentation->GetTextActor()->GetTextProperty()->SetJustificationToCentered();
+    textRepresentation->GetTextActor()->GetTextProperty()->SetVerticalJustificationToCentered();
+    textRepresentation->GetBorderProperty()->SetColor(0.2, 0.2, 0.2); // Darker grey border
+    textRepresentation->SetShowBorder(true);
+
+    auto buttonWidget = vtkSmartPointer<vtkTextWidget>::New();
+    buttonWidget->SetRepresentation(textRepresentation);
+    buttonWidget->SetInteractor(interactor);
+    buttonWidget->SetSelectable(true); 
+
+    auto closeCallback = vtkSmartPointer<CloseWindowCallback>::New();
+    closeCallback->SetRenderWindow(renderWindow);
+    closeCallback->SetInteractor(interactor);
+    buttonWidget->AddObserver(vtkCommand::EndInteractionEvent, closeCallback); // Use EndInteractionEvent
+
+    buttonWidget->On();
 
     // Создаем и настраиваем обработчик анимации
     auto animationCallback = vtkSmartPointer<AnimationCallback>::New();
