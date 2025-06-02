@@ -290,11 +290,11 @@ void MainWindow::calculatePreviewTrajectory() {
     
     // Рассчитываем траекторию
     std::vector<State> states;
-    double dt = 0.05; // Увеличенный шаг для предпросмотра (меньше точек)
+    double dt = 0.01; // Увеличенный шаг для предпросмотра (меньше точек)
     do {
         states.push_back(state);
         state = runge_kutta_step(state, params, dt);
-    } while (state.y + dt * state.vy >= 0.0 && states.size() < 200); // Ограничиваем количество точек
+    } while (state.y + dt * state.vy >= 0.0 && states.size() < 10000); // Ограничиваем количество точек
     
     // Очищаем предыдущую траекторию
     previewScene->clear();
@@ -461,7 +461,7 @@ void MainWindow::calculatePreviewTrajectory() {
     // Перезапускаем анимацию
     previewStep = 0;
     if (!previewTimer->isActive()) {
-        previewTimer->start(50); // 20 кадров в секунду
+        previewTimer->start(25); // Уменьшаем интервал для ускорения анимации (было 50)
     }
 }
 

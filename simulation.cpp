@@ -520,21 +520,22 @@ void StartSimulation(Parameters params) {
 
     buttonWidget->On();
 
-    // Создаем и настраиваем обработчик анимации
-    auto animationCallback = vtkSmartPointer<AnimationCallback>::New();
-    animationCallback->SetSphereActor(sphereActor);
-    animationCallback->SetTrajectoryPoints(states);
-    animationCallback->SetRenderWindow(renderWindow);
-    animationCallback->SetRenderer(renderer);
-    animationCallback->SetSpeed(2.0); // Скорость анимации
-    animationCallback->InitializeTrajectoryActors(); // Инициализируем акторы траектории
+    // // Создаем и настраиваем обработчик анимации
+    // auto animationCallback = vtkSmartPointer<AnimationCallback>::New();
+    // animationCallback->SetSphereActor(sphereActor);
+    // animationCallback->SetTrajectoryPoints(states);
+    // animationCallback->SetRenderWindow(renderWindow);
+    // animationCallback->SetRenderer(renderer);
+    // animationCallback->SetSpeed(2.0); // Скорость анимации
+    // animationCallback->InitializeTrajectoryActors(); // Инициализируем акторы траектории
 
-    // Добавляем обработчик таймера
-    interactor->Initialize();
-    interactor->AddObserver(vtkCommand::TimerEvent, animationCallback);
-    int timerId = interactor->CreateRepeatingTimer(30); // 30 мс между кадрами (примерно 33 кадра в секунду)
+    // // Добавляем обработчик таймера
+    // interactor->Initialize(); // This might be needed for the button, let's test. If button fails, uncomment this and comment out the next two.
+    // interactor->AddObserver(vtkCommand::TimerEvent, animationCallback);
+    // int timerId = interactor->CreateRepeatingTimer(30); // 30 мс между кадрами (примерно 33 кадра в секунду)
 
-    // Запускаем интерактор
+    // Запускаем интерактор (должен быть после инициализации, если она нужна)
+    interactor->Initialize(); // Ensure interactor is initialized for the button to work.
     interactor->Start();
 }
 
