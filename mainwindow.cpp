@@ -16,7 +16,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent) {
+    : QMainWindow(parent), previewStep(0), m_currentFlightTime(1.0) {
     setupUI();
     setupPreviewVisualization();
 }
@@ -446,6 +446,8 @@ void MainWindow::calculatePreviewTrajectory() {
         double total_distance_val = std::sqrt(final_x_val * final_x_val + final_z_val * final_z_val);
         double flight_time_val = (states.size() - 1) * dt;
 
+        this->m_currentFlightTime = flight_time_val; // Store flight time
+
         QString resultsText = QString("Результаты (предпросмотр):\n") +
                               QString("-----------------------------\n") +
                               QString("Максимальная высота: %1 м\n").arg(max_height_val, 0, 'f', 2) +
@@ -461,7 +463,16 @@ void MainWindow::calculatePreviewTrajectory() {
     // Перезапускаем анимацию
     previewStep = 0;
     if (!previewTimer->isActive()) {
-        previewTimer->start(25); // Уменьшаем интервал для ускорения анимации (было 50)
+        int timerInterval = 25; // Default fallback interval
+        if (this->m_currentFlightTime > 0 && !previewTrajectory.isEmpty() && previewTrajectory.size() > 1) {
+            timerInterval = static_cast<int>((this->m_currentFlightTime * 1000) / (previewTrajectory.size() -1) ); // milliseconds per step
+            if (timerInterval <= 0) {
+                timerInterval = 1; // Ensure a positive interval, minimum 1ms
+            }
+        } else if (!previewTrajectory.isEmpty() && previewTrajectory.size() == 1) {
+             timerInterval = 1000; // If only one point, can be a longer static display or handled differently
+        }
+        previewTimer->start(timerInterval);
     }
 }
 
@@ -609,6 +620,16 @@ MainWindow::SimulationResult MainWindow::runSingleSimulationForGraph(Parameters 
 void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QString& xLabelText, const QString& yLabelText, double xMin, double xMax, double yMin, double yMax) {
     previewScene->clear(); // Очищаем сцену перед отрисовкой графика
 
+
+    // DIAGNOSTIC TEXT - END
+
+    // Масштабирование и отступы (возвращаем к версии без заголовка, но с фиксом перекрытия текста)
+    double plotWidth = previewView->width() * 0.85;
+    double plotHeight = previewView->height() * 0.80; // Восстановлено
+    double H_MARGIN = previewView->width() * 0.10;
+    double V_MARGIN_TOP = previewView->height() * 0.05; // Восстановлено
+    double V_MARGIN_BOTTOM = previewView->height() * 0.15;
+
     if (dataPoints.isEmpty()) {
         QGraphicsTextItem *noDataText = new QGraphicsTextItem("Нет данных для построения графика.");
         noDataText->setFont(QFont("Arial", 12));
@@ -616,14 +637,6 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
         previewScene->addItem(noDataText);
         return;
     }
-
-    // Масштабирование и отступы
-    double plotWidth = previewView->width() * 0.85;
-    double plotHeight = previewView->height() * 0.80;
-    double H_MARGIN = previewView->width() * 0.10;
-    double V_MARGIN_TOP = previewView->height() * 0.05;
-    double V_MARGIN_BOTTOM = previewView->height() * 0.15;
-
 
     double effectiveXRange = (xMax - xMin == 0) ? 1 : (xMax - xMin);
     double effectiveYRange = (yMax - yMin == 0) ? 1 : (yMax - yMin);
@@ -635,9 +648,12 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
     QGraphicsLineItem *xAxis = new QGraphicsLineItem(H_MARGIN, V_MARGIN_TOP + plotHeight, H_MARGIN + plotWidth, V_MARGIN_TOP + plotHeight);
     xAxis->setPen(QPen(Qt::black, 2));
     previewScene->addItem(xAxis);
-    QGraphicsTextItem *xLabel = new QGraphicsTextItem(xLabelText);
+    
+    // Restore xLabel to its original logic with explicit color
+    QGraphicsTextItem *xLabel = new QGraphicsTextItem(xLabelText); // Original text restored
     xLabel->setFont(QFont("Arial", 10));
-    xLabel->setPos(H_MARGIN + plotWidth / 2 - xLabel->boundingRect().width() / 2, V_MARGIN_TOP + plotHeight + 5);
+    xLabel->setDefaultTextColor(Qt::black); // Keep explicit color
+    xLabel->setPos(H_MARGIN + plotWidth / 2 - xLabel->boundingRect().width() / 2, V_MARGIN_TOP + plotHeight + 25); // Original position restored
     previewScene->addItem(xLabel);
 
     // Ось Y
@@ -646,8 +662,9 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
     previewScene->addItem(yAxis);
     QGraphicsTextItem *yLabel = new QGraphicsTextItem(yLabelText);
     yLabel->setFont(QFont("Arial", 10));
+    yLabel->setDefaultTextColor(Qt::black); // Keep explicit color
     yLabel->setRotation(-90); // Поворачиваем метку для оси Y
-    yLabel->setPos(H_MARGIN - yLabel->boundingRect().height() - 5, V_MARGIN_TOP + plotHeight / 2 + yLabel->boundingRect().width()/2);
+    yLabel->setPos(H_MARGIN - yLabel->boundingRect().height() - 45, V_MARGIN_TOP + plotHeight / 2 + yLabel->boundingRect().width()/2);
     previewScene->addItem(yLabel);
     
     // Добавляем метки на осях
@@ -662,7 +679,8 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
         previewScene->addItem(tick);
         QGraphicsTextItem *label = new QGraphicsTextItem(QString::number(val, 'f', 1));
         label->setFont(tickFont);
-        label->setPos(xPos - label->boundingRect().width() / 2, V_MARGIN_TOP + plotHeight + 7);
+        label->setDefaultTextColor(Qt::black); // Keep explicit color
+        label->setPos(xPos - label->boundingRect().width() / 2, V_MARGIN_TOP + plotHeight + 10);
         previewScene->addItem(label);
     }
 
@@ -674,7 +692,8 @@ void MainWindow::drawDependencyGraph(const QList<QPointF>& dataPoints, const QSt
         previewScene->addItem(tick);
         QGraphicsTextItem *label = new QGraphicsTextItem(QString::number(val, 'f', 1));
         label->setFont(tickFont);
-        label->setPos(H_MARGIN - label->boundingRect().width() - 7, yPos - label->boundingRect().height() / 2);
+        label->setDefaultTextColor(Qt::black); // Keep explicit color
+        label->setPos(H_MARGIN - label->boundingRect().width() - 10, yPos - label->boundingRect().height() / 2);
         previewScene->addItem(label);
     }
 

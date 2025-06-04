@@ -538,7 +538,7 @@ void StartSimulation(Parameters params) {
     interactor->Initialize(); // Ensure interactor is initialized for the button to work.
     interactor->Start();
 }
-
+ 
 void StartAnimatedSimulation(Parameters params) {
     double angle_rad = params.angle_deg * 3.14 / 180.0;
     double azimuth_rad = params.azimuth_deg * 3.14 / 180.0;

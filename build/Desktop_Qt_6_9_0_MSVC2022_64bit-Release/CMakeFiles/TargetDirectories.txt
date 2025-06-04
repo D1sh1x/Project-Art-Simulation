@@ -1,0 +1,5 @@
+C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/ProjectileTrajectory.dir
+C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/edit_cache.dir
+C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/rebuild_cache.dir
+C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/ProjectileTrajectory_autogen_timestamp_deps.dir
+C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/ProjectileTrajectory_autogen.dir

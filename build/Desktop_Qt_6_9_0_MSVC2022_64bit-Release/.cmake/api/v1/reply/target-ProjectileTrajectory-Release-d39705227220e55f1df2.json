@@ -1,0 +1,768 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "ProjectileTrajectory.exe"
+		},
+		{
+			"path" : "ProjectileTrajectory.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"set_target_properties",
+			"include",
+			"find_package",
+			"target_compile_definitions",
+			"vtk_module_autoinit"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"E:/hlam/Qt/6.9.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
+			"E:/hlam/Qt/6.9.0/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
+			"E:/hlam/Qt/6.9.0/msvc2022_64/lib/cmake/Qt6/Qt6Config.cmake",
+			"E:/hlam/Qt/6.9.0/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake",
+			"E:/hlam/Qt/6.9.0/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake",
+			"E:/hlam/vtk/VTK/lib/cmake/vtk-9.4/VTK-targets.cmake",
+			"E:/hlam/vtk/VTK/lib/cmake/vtk-9.4/vtk-config.cmake",
+			"E:/hlam/vtk/VTK/lib/cmake/vtk-9.4/vtkModule.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 37,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 47,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 54,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 12,
+				"parent" : 0
+			},
+			{
+				"file" : 3,
+				"parent" : 4
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 212,
+				"parent" : 5
+			},
+			{
+				"file" : 2,
+				"parent" : 6
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 57,
+				"parent" : 7
+			},
+			{
+				"file" : 1,
+				"parent" : 8
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 61,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 3,
+				"line" : 212,
+				"parent" : 5
+			},
+			{
+				"file" : 5,
+				"parent" : 11
+			},
+			{
+				"command" : 3,
+				"file" : 5,
+				"line" : 55,
+				"parent" : 12
+			},
+			{
+				"file" : 4,
+				"parent" : 13
+			},
+			{
+				"command" : 2,
+				"file" : 4,
+				"line" : 61,
+				"parent" : 14
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 19,
+				"parent" : 0
+			},
+			{
+				"file" : 7,
+				"parent" : 16
+			},
+			{
+				"command" : 3,
+				"file" : 7,
+				"line" : 147,
+				"parent" : 17
+			},
+			{
+				"file" : 6,
+				"parent" : 18
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 2329,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 2255,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 2016,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 2875,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 1073,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 1029,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 960,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 1554,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 926,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 548,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 650,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 356,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 278,
+				"parent" : 19
+			},
+			{
+				"command" : 2,
+				"file" : 6,
+				"line" : 120,
+				"parent" : 19
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 71,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 8,
+				"line" : 3515,
+				"parent" : 34
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -std:c++20 -MD"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Zc:__cplusplus"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-permissive-"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-utf-8"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 3,
+					"define" : "GLAD_API_CALL_EXPORT"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "KISSFFT_DLL_IMPORT=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "QT_WIDGETS_LIB"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "UNICODE"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "WIN32"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "WIN64"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "_ENABLE_EXTENDED_ALIGNED_STORAGE"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "_UNICODE"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "_WIN64"
+				},
+				{
+					"backtrace" : 3,
+					"define" : "kiss_fft_scalar=double"
+				},
+				{
+					"backtrace" : 35,
+					"define" : "vtkRenderingContext2D_AUTOINIT_INCLUDE=\"C:/Users/avaki/Desktop/SimulationArtillery-master \u2014 \u043a\u043e\u043f\u0438\u044f/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/vtkModuleAutoInit_04d683062bbc5774e34e8c62b13e1a5a.h\""
+				},
+				{
+					"backtrace" : 35,
+					"define" : "vtkRenderingCore_AUTOINIT_INCLUDE=\"C:/Users/avaki/Desktop/SimulationArtillery-master \u2014 \u043a\u043e\u043f\u0438\u044f/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/vtkModuleAutoInit_04d683062bbc5774e34e8c62b13e1a5a.h\""
+				},
+				{
+					"backtrace" : 35,
+					"define" : "vtkRenderingOpenGL2_AUTOINIT_INCLUDE=\"C:/Users/avaki/Desktop/SimulationArtillery-master \u2014 \u043a\u043e\u043f\u0438\u044f/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/CMakeFiles/vtkModuleAutoInit_04d683062bbc5774e34e8c62b13e1a5a.h\""
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 0,
+					"path" : "C:/Users/avaki/Desktop/SimulationArtillery-master \u2014 \u043a\u043e\u043f\u0438\u044f/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "E:/hlam/Qt/6.9.0/msvc2022_64/include/QtCore"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "E:/hlam/Qt/6.9.0/msvc2022_64/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "E:/hlam/Qt/6.9.0/msvc2022_64/mkspecs/win32-msvc"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "E:/hlam/Qt/6.9.0/msvc2022_64/include/QtGui"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "E:/hlam/Qt/6.9.0/msvc2022_64/include/QtWidgets"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/token"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtknlohmannjson/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtknlohmannjson"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtkkissfft"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtkglad"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtkfreetype/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "E:/hlam/vtk/VTK/include/vtk-9.4/vtkzlib"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					2,
+					2,
+					3
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				4
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"id" : "ProjectileTrajectory_autogen_timestamp_deps::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "ProjectileTrajectory_autogen::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "ProjectileTrajectory::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -MD",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "E:\\hlam\\Qt\\6.9.0\\msvc2022_64\\lib\\Qt6Widgets.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingContextOpenGL2-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingGL2PSOpenGL2-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkInteractionWidgets-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "E:\\hlam\\Qt\\6.9.0\\msvc2022_64\\lib\\Qt6Gui.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "E:\\hlam\\Qt\\6.9.0\\msvc2022_64\\lib\\Qt6Core.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 10,
+				"fragment" : "mpr.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 10,
+				"fragment" : "userenv.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 15,
+				"fragment" : "d3d11.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 15,
+				"fragment" : "dxgi.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 15,
+				"fragment" : "dxguid.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 15,
+				"fragment" : "d3d12.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingOpenGL2-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingHyperTreeGrid-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingUI-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkglad-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 21,
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkInteractionStyle-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkIOXML-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 22,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkIOXMLParser-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingAnnotation-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 23,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingContext2D-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingFreeType-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 24,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkfreetype-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkIOImage-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 25,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkzlib-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkRenderingCore-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonColor-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkFiltersSources-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkFiltersGeneral-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 26,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkFiltersCore-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 27,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkImagingCore-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 28,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonExecutionModel-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonDataModel-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 29,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonTransforms-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 30,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonMisc-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 29,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonMath-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 31,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkkissfft-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtkCommonCore-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 32,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtktoken-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 32,
+				"fragment" : "E:\\hlam\\vtk\\VTK\\lib\\vtksys-9.4.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 33,
+				"fragment" : "ws2_32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 33,
+				"fragment" : "dbghelp.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 33,
+				"fragment" : "psapi.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "ProjectileTrajectory",
+	"nameOnDisk" : "ProjectileTrajectory.exe",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				4
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				3,
+				5,
+				6
+			]
+		},
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				7
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				8
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "mainwindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "mainwindow.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "simulation.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "simulation.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "parameters.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
+		}
+	],
+	"type" : "EXECUTABLE"
+}

@@ -1,0 +1,105 @@
+# ninja log v6
+37	660	7707712141306439	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+37	660	7707712141306439	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+37	660	7707712141306439	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+37	660	7707712141306439	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+689	5818	7707712142698426	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+677	8359	7707712142578452	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+671	8406	7707712142518436	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+682	11133	7707712142638454	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+11134	11435	7707712247146876	ProjectileTrajectory.exe	836ed6a733e267cd
+134	2976	7707713566481854	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+106	4927	7707713566206196	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+117	4970	7707713566313028	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+126	7290	7707713566406566	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7290	7631	7707713638047279	ProjectileTrajectory.exe	836ed6a733e267cd
+80	304	7707723361899659	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+80	304	7707723361899659	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+80	304	7707723361899659	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+80	304	7707723361899659	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+327	3429	7707723364376836	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+308	5159	7707723364181678	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+315	5174	7707723364247325	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+321	7611	7707723364305673	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7611	7961	7707723437208012	ProjectileTrajectory.exe	836ed6a733e267cd
+63	241	7707733676014985	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+63	241	7707733676014985	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+63	241	7707733676014985	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+63	241	7707733676014985	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+260	3346	7707733677993834	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+248	5058	7707733677873873	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+243	5137	7707733677813835	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+254	7491	7707733677933841	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7492	7842	7707733750306679	ProjectileTrajectory.exe	836ed6a733e267cd
+84	292	7707734804072707	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+84	292	7707734804072707	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+84	292	7707734804072707	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+84	292	7707734804072707	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+312	3413	7707734806348296	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+299	5144	7707734806213123	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+294	5158	7707734806163092	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+306	7452	7707734806288146	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7452	7821	7707734877748679	ProjectileTrajectory.exe	836ed6a733e267cd
+105	363	7707735311391227	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+105	363	7707735311391227	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+105	363	7707735311391227	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+105	363	7707735311391227	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+388	3438	7707735314223741	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+374	5202	7707735314083654	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+367	5212	7707735314013815	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+382	7875	7707735314163656	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7876	8241	7707735389105113	ProjectileTrajectory.exe	836ed6a733e267cd
+86	308	7707735597701585	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+86	308	7707735597701585	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+86	308	7707735597701585	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+86	308	7707735597701585	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+328	3395	7707735600125651	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+315	5131	7707735599995654	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+310	5215	7707735599945698	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+322	7575	7707735600065668	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7576	7904	7707735672598363	ProjectileTrajectory.exe	836ed6a733e267cd
+102	315	7707735837094322	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+102	315	7707735837094322	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+102	315	7707735837094322	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+102	315	7707735837094322	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+341	3430	7707735839493204	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+323	5158	7707735839313198	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+317	5311	7707735839250175	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+332	7661	7707735839403203	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7662	7951	7707735912695862	ProjectileTrajectory.exe	836ed6a733e267cd
+94	287	7707736113334366	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+94	287	7707736113334366	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+94	287	7707736113334366	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+94	287	7707736113334366	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+307	3374	7707736115460140	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+294	5089	7707736115330266	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+289	5349	7707736115280128	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+301	7842	7707736115400124	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7843	8192	7707736190819730	ProjectileTrajectory.exe	836ed6a733e267cd
+83	301	7707736392643320	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+83	301	7707736392643320	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+83	301	7707736392643320	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+83	301	7707736392643320	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+322	3470	7707736395024907	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+309	5207	7707736394904887	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+303	5232	7707736394844856	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+316	7565	7707736394965029	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7566	7915	7707736467462459	ProjectileTrajectory.exe	836ed6a733e267cd
+85	312	7707736598467403	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+85	312	7707736598467403	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+85	312	7707736598467403	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+85	312	7707736598467403	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+330	3367	7707736600916604	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+314	5188	7707736600760966	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+320	5205	7707736600820986	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+325	7651	7707736600870930	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7651	7992	7707736674132928	ProjectileTrajectory.exe	836ed6a733e267cd
+111	307	7707736822211059	ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+111	307	7707736822211059	ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+111	307	7707736822211059	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/timestamp	edd4571b836fbbe1
+111	307	7707736822211059	C:/Users/avaki/Desktop/SimulationArtillery-master — копия/build/Desktop_Qt_6_9_0_MSVC2022_64bit-Release/ProjectileTrajectory_autogen/mocs_compilation.cpp	edd4571b836fbbe1
+326	3448	7707736824362050	CMakeFiles/ProjectileTrajectory.dir/simulation.cpp.obj	df733287d6beb21a
+315	5112	7707736824252363	CMakeFiles/ProjectileTrajectory.dir/main.cpp.obj	5e193d1141d86ea4
+310	5142	7707736824192091	CMakeFiles/ProjectileTrajectory.dir/ProjectileTrajectory_autogen/mocs_compilation.cpp.obj	1ce09275be7d184b
+321	7506	7707736824312015	CMakeFiles/ProjectileTrajectory.dir/mainwindow.cpp.obj	16c76367d65d8813
+7507	7877	7707736896164429	ProjectileTrajectory.exe	836ed6a733e267cd

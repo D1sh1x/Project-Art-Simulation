@@ -57,13 +57,14 @@ private:
     QTimer *previewTimer;
     int previewStep;
     QList<QPointF> previewTrajectory;
+    double m_currentFlightTime; // Added to store current flight time for animation
 
     void setupUI();
     void runSimulation();
     void setupPreviewVisualization();
     void calculatePreviewTrajectory();
     // Helper function to draw the graph
-    void drawDependencyGraph(const QList<QPointF>& dataPoints, const QString& xLabel, const QString& yLabel, double xMin, double xMax, double yMin, double yMax); 
+    void drawDependencyGraph(const QList<QPointF>& dataPoints, const QString& xLabel, const QString& yLabel, double xMin, double xMax, double yMin, double yMax);
     // Helper struct for simulation results
     struct SimulationResult {
         double max_height = 0.0;
